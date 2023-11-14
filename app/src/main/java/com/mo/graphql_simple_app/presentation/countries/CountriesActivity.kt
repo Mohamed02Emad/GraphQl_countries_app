@@ -7,9 +7,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isGone
 import androidx.lifecycle.lifecycleScope
 import com.mo.graphql_simple_app.databinding.ActivityCountriesBinding
+import com.mo.graphql_simple_app.domain.models.DetailedCountry
 import com.mo.graphql_simple_app.domain.models.SimpleCountry
 import com.mo.graphql_simple_app.presentation.adapters.CountriesAdapter
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 
@@ -35,22 +37,40 @@ class CountriesActivity : AppCompatActivity() {
                     setUpRecyclerView(state.countries!!)
                     viewModel.clearCountries()
                 }
-                if (state.country!=null){
+                if (state.country != null) {
+                    openCountryDialog(state.country)
                     viewModel.clearCountry()
                 }
             }
         }
     }
 
+    private fun openCountryDialog(country: DetailedCountry) {
+        binding.apply {
+            dialog.apply {
+                tvCapital.text = country.capital
+                tvContinent.text = country.continent
+                tvCurrency.text = country.currency
+                tvName.text = country.name
+                tvEmoji.text = country.emoji
+            }
+            dialogFrame.isGone = false
+            lifecycleScope.launch {
+                delay(2500)
+                dialogFrame.isGone = true
+            }
+        }
+    }
+
     private fun setUpRecyclerView(countries: List<SimpleCountry>) {
-        countriesAdapter = CountriesAdapter(countries){country->
+        countriesAdapter = CountriesAdapter(countries) { country ->
             onCountryClicked(country)
         }
         binding.countriesRv.adapter = countriesAdapter
     }
 
     private fun onCountryClicked(country: SimpleCountry) {
-        showToast(country.code)
+        viewModel.getCountry(country.code)
     }
 
     private fun setLoadingVisibility(isLoading: Boolean) {

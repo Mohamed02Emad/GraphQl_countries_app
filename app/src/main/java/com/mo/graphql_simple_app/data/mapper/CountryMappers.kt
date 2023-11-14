@@ -13,7 +13,7 @@ fun CountryQuery.Country.toDetailedCountry() : DetailedCountry {
        capital = this.capital,
        currency = this.currency,
        languages = this.languages,
-       continent = this.continent
+       continent = this.continent.name
    )
 }
 

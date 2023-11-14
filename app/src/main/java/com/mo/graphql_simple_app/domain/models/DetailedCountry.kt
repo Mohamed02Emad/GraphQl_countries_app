@@ -9,5 +9,5 @@ data class DetailedCountry (
      val capital: String?,
      val currency: String?,
      val languages: List<CountryQuery.Language>,
-     val continent: CountryQuery.Continent,
+     val continent: String,
 )
